@@ -1,0 +1,91 @@
+@startuml databases
+
+' hide the spot
+hide circle
+
+' avoid problems with angled crows feet
+skinparam linetype ortho
+
+entity "users" {
+  *id: uuid <<generated>>
+  --
+  * **email**: varchar
+  * **username**: varchar
+  *password: varchar
+  remember_me_token: varchar
+  *created_at: timestamp
+  *updated_at: timestamp
+}
+
+entity "games" {
+  *id: uuid <<generated>>
+  --
+  *author_id: uuid <<FK>>
+  * **title**: varchar
+  *description: varchar
+  project_url: varchar
+  * **plataform_route**: varchar
+  *cover_image: varchar
+  tagline: varchar
+  *price: decimal(10,2)
+  *status: int
+  *created_at: timestamp
+  *updated_at: timestamp
+}
+
+entity "game_covers" {
+  *id: uuid <<generated>>
+  --
+  game_id: uuid <<FK>>
+  *file_extension: string
+  *created_at: timestamp
+}
+
+entity "game_images" {
+  *id: uuid <<generated>>
+  --
+  game_id: uuid <<FK>>
+  *file_extension: string
+  *created_at: timestamp
+}
+
+entity "game_builds" {
+  *id: uuid <<generated>>
+  --
+  game_id: uuid <<FK>>
+  *file_extension: string
+  *name: varchar
+  *size: varchar
+}
+
+entity "game_user" {
+  *game_id: uuid <<FK1>>
+  *user_id: uuid <<FK2>>
+  --
+  *created_at: timestamp
+}
+
+entity "genres" {
+  *id: int <<generated>>
+  --
+  * **name**: varchar
+  *created_at: timestamp
+}
+
+entity "game_genre" {
+  *game_id: uuid <<FK1>>
+  *genre_id: int <<FK2>>
+  --
+  *created_at: timestamp
+}
+
+users ||--o{ games
+users ||--o{ game_user
+games ||--|| game_covers
+games ||--|{ game_builds
+games ||--o{ game_user
+games ||--|{ game_genre
+games ||--o{ game_images
+genres ||--|{ game_genre
+
+@enduml
