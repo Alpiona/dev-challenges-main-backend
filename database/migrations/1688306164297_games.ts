@@ -8,6 +8,7 @@ export default class extends BaseSchema {
       table.uuid('id').primary().defaultTo(this.db.knexRawQuery('uuid_generate_v4()'))
       table.uuid('author_id').references('users.id').notNullable()
       table.string('title', 200).notNullable().unique()
+      table.string('platform_url_path', 200).notNullable().unique()
       table.text('description').notNullable().unique()
       table.string('project_url').nullable()
       table.string('cover_image', 50).notNullable()

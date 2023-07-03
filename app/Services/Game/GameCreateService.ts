@@ -1,34 +1,39 @@
-import { Exception } from '@adonisjs/core/build/standalone'
-import { schema } from '@ioc:Adonis/Core/Validator'
+import { rules, schema } from '@ioc:Adonis/Core/Validator'
 import { DefaultValidatorMessages } from 'App/Constants/DefaultValidatorMessages'
-import User from 'App/Models/User'
+import Game from 'App/Models/Game'
 import BaseService from '../BaseService'
 
 export default class GameCreateService implements BaseService<Input, Output> {
-  public async execute({ email, password, username }: Input): Promise<Output> {
-    const user = await User.query().where('email', email).orWhere('username', username).first()
+  public async execute({
+    description,
+    price,
+    status,
+    title,
+    projectUrl,
+    tagline,
+  }: Input): Promise<Output> {
+    const platformUrlPath = title
+      .trim()
+      .replace(/[^a-zA-Z0-9\s]/g, '')
+      .replace(' ', '_')
 
-    if (!user) {
-      await User.create({ email, password, username })
-    } else if (user.email === email) {
-      throw new Exception('Email already in use', 409, 'E_UNIQUE_EMAIL')
-    } else if (user.username === username) {
-      throw new Exception('Username already in use', 409, 'E_UNIQUE_USERNAME')
-    }
+    const game = await Game.create({
+      description,
+      price,
+      status,
+      title,
+      projectUrl,
+      tagline,
+      platformUrlPath,
+      coverImage: 'needtochange',
+    })
+
+    return game
   }
-
-  /**
-   * Header do jogo
-  - Imagens cadastradas do jogo
-  - Título do jogo
-  - Descrição
-  - Builds
-  - Preço
-   */
 
   public schemaValidator = {
     schema: schema.create({
-      title: schema.string(),
+      title: schema.string([rules.unique({ table: 'games', column: 'title' })]),
       description: schema.string(),
       price: schema.number(),
       projectUrl: schema.string.optional(),
@@ -40,9 +45,12 @@ export default class GameCreateService implements BaseService<Input, Output> {
 }
 
 type Input = {
-  email: string
-  password: string
-  username: string
+  title: string
+  description: string
+  price: number
+  projectUrl?: string
+  tagline?: string
+  status: number
 }
 
-type Output = void
+type Output = Game

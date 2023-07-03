@@ -8,4 +8,6 @@ Route.group(() => {
 
 Route.group(() => {
   Route.delete('/users/logout', 'UsersController.logout')
+
+  Route.get('/users', 'UsersController.getSession')
 }).middleware('auth')

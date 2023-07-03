@@ -1,4 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { UserTypes } from 'App/Constants/UserTypes'
 import UserCreateService from 'App/Services/User/UserCreateService'
 import UserLoginService from 'App/Services/User/UserLoginService'
 import UserLogoutService from 'App/Services/User/UserLogoutService'
@@ -34,6 +35,16 @@ export default class UsersController {
 
     return response.ok({
       data: {},
+      errors: [],
+    })
+  }
+
+  public async getSession({ response, auth }: HttpContextContract) {
+    const { username, type } = auth.user!
+    const accessType = Object.keys(UserTypes).find((key) => UserTypes[key] === type)
+
+    return response.ok({
+      data: { username, accessType },
       errors: [],
     })
   }

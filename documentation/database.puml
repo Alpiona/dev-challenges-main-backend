@@ -24,7 +24,7 @@ entity "games" {
   * **title**: varchar
   *description: varchar
   project_url: varchar
-  * **plataform_route**: varchar
+  * **platform_url_path**: varchar
   *cover_image: varchar
   tagline: varchar
   *price: decimal(10,2)

@@ -37,7 +37,7 @@ export default class Game extends BaseModel {
   public users: ManyToMany<typeof User>
 
   @column()
-  public name: string
+  public title: string
 
   @column()
   public description: string
@@ -49,10 +49,16 @@ export default class Game extends BaseModel {
   public coverImage: string
 
   @column()
+  public platformUrlPath: string
+
+  @column()
   public tagline: string | null
 
   @column()
   public price: number
+
+  @column()
+  public status: number
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

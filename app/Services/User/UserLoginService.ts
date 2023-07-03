@@ -3,6 +3,7 @@ import { AuthContract } from '@ioc:Adonis/Addons/Auth'
 import { rules, schema } from '@ioc:Adonis/Core/Validator'
 import { ConfigurationValues } from 'App/Constants/ConfigurationValues'
 import { DefaultValidatorMessages } from 'App/Constants/DefaultValidatorMessages'
+import { UserTypes } from 'App/Constants/UserTypes'
 import User from 'App/Models/User'
 import { DateTime } from 'luxon'
 import BaseService from '../BaseService'
@@ -27,6 +28,7 @@ export default class UserLoginService implements BaseService<Input, Output> {
     })
 
     return {
+      accessType: Object.keys(UserTypes).find((key) => UserTypes[key] === user.type)!,
       username: user.username,
       token: token.token,
       expiresAt: token.expiresAt,
@@ -52,6 +54,7 @@ type Input = {
 
 type Output = {
   username: string
+  accessType: string
   token: string
   expiresAt?: DateTime
 }
