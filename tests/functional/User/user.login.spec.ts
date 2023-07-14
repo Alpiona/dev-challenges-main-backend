@@ -69,8 +69,6 @@ test.group('Users - login (Failed) ', (group) => {
 
     const response = await client.post(route('UsersController.login')).json(requestBody)
 
-    console.log(response.body())
-
     response.assertTextIncludes('Invalid credentials')
     response.assertStatus(401)
   })
@@ -88,8 +86,6 @@ test.group('Users - login (Failed) ', (group) => {
     const requestBody = { email: null, password }
 
     const response = await client.post(route('UsersController.login')).json(requestBody)
-
-    console.log(response.body())
 
     response.assertBodyContains({
       errors: [{ message: 'Is necessary email or username' }],

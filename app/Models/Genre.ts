@@ -1,8 +1,9 @@
-import { BaseModel, column, ManyToMany, manyToMany } from '@ioc:Adonis/Lucid/Orm'
+import { column, ManyToMany, manyToMany } from '@ioc:Adonis/Lucid/Orm'
 import { DateTime } from 'luxon'
+import AppBaseModel from './AppBaseModel'
 import Game from './Game'
 
-export default class Genre extends BaseModel {
+export default class Genre extends AppBaseModel {
   @column({ isPrimary: true })
   public id: number
 

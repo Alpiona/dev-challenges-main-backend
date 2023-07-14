@@ -4,7 +4,6 @@ import BaseService from '../BaseService'
 
 export default class UserLogoutService implements BaseService<Input, Output> {
   public async execute({ auth }: Input): Promise<Output> {
-    console.log('chegou')
     await auth.use('api').logout()
   }
 

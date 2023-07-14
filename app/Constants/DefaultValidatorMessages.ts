@@ -6,4 +6,6 @@ export const DefaultValidatorMessages = {
   minLength: "The '{{ field }}' need to have at least {{ options.minLength }} characters",
   enum: "The '{{ field }}' only accepts the values [{{ options.choices }}]",
   requiredIfNotExists: 'Is necessary {{ field }} or {{ options.otherField }}',
+  unique: "The '{{ field }}' is already in use",
+  exists: 'The data you are looking for could not be found',
 }

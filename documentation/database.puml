@@ -33,11 +33,10 @@ entity "games" {
   *updated_at: timestamp
 }
 
-entity "game_covers" {
-  *id: uuid <<generated>>
+entity "operating_systems" {
+  *id: int <<generated>>
   --
-  game_id: uuid <<FK>>
-  *file_extension: string
+  * **name**: varchar
   *created_at: timestamp
 }
 
@@ -54,8 +53,10 @@ entity "game_builds" {
   --
   game_id: uuid <<FK>>
   *file_extension: string
-  *name: varchar
+  *operating_system_id: int
+  *version: string
   *size: varchar
+  *created_at: timestamp
 }
 
 entity "game_user" {
@@ -73,19 +74,28 @@ entity "genres" {
 }
 
 entity "game_genre" {
+  *id: int <<generated>>
+  --
   *game_id: uuid <<FK1>>
   *genre_id: int <<FK2>>
+  *created_at: timestamp
+}
+
+entity "game_operating_system" {
+  *operating_system_id: int <<FK1>>
+  *game_id: uuid <<FK2>>
   --
   *created_at: timestamp
 }
 
 users ||--o{ games
 users ||--o{ game_user
-games ||--|| game_covers
-games ||--|{ game_builds
-games ||--o{ game_user
-games ||--|{ game_genre
-games ||--o{ game_images
+game_user }o--|| games
 genres ||--|{ game_genre
+game_genre }|--|| games
+operating_systems ||--|{ game_operating_system
+game_operating_system }|--|| games
+games ||--|{ game_builds
+games ||--o{ game_images
 
 @enduml

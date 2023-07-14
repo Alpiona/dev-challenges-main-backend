@@ -8,6 +8,9 @@
     "build"
   ],
   "compilerOptions": {
+    "lib": [
+      "ES2021.String"
+    ],
     "outDir": "build",
     "rootDir": "./",
     "sourceMap": true,

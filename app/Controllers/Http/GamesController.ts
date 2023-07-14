@@ -1,44 +1,74 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import GameAddToUserService from 'App/Services/Game/GameAddToUserService'
 import GameCreateService from 'App/Services/Game/GameCreateService'
+import GameGetGenresService from 'App/Services/Game/GameGetGenresService'
 import GameGetListService from 'App/Services/Game/GameGetListService'
 import GameGetOneService from 'App/Services/Game/GameGetOneService'
 
 export default class GamesController {
-  async create({ response, request, response }: HttpContextContract) {
+  public async create({ response, request, auth }: HttpContextContract) {
     const service = new GameCreateService()
 
-    const input = await request.validate(service.schemaValidator)
+    let input = await request.validate(service.schemaValidator)
 
-    await service.execute(input)
+    const output = await service.execute({
+      ...input,
+      auth,
+    })
 
-    return response.created({ data: {}, errors: [] })
+    return response.created({ data: output, errors: [] })
   }
 
-  async getList({ response, request, response }: HttpContextContract) {
+  public async getList({ response, request, auth }: HttpContextContract) {
+    let userId
+
+    try {
+      userId = (await auth.use('api').authenticate()).id
+    } catch {}
+
     const service = new GameGetListService()
 
     const input = await request.validate(service.schemaValidator)
+    console.log(input)
 
-    await service.execute(input)
+    const output = await service.execute({ ...input, userId })
 
-    return response.created({ data: {}, errors: [] })
+    return response.ok({ data: output, errors: [] })
   }
 
-  async getOne({ response, request, response }: HttpContextContract) {
+  public async getOne({ response, request, auth }: HttpContextContract) {
+    let userId
+
+    try {
+      userId = (await auth.use('api').authenticate()).id
+    } catch {}
+
     const service = new GameGetOneService()
 
     const input = await request.validate(service.schemaValidator)
 
-    await service.execute(input)
+    const output = await service.execute({ ...input, userId })
 
-    return response.created({ data: {}, errors: [] })
+    return response.ok({ data: output, errors: [] })
   }
 
-  // async uploadImage({ response, request, response }: HttpContextContract) {}
+  public async getGenres({ response, request }: HttpContextContract) {
+    const service = new GameGetGenresService()
 
-  // async uploadCoverImage({ response, request, response }: HttpContextContract) {}
+    const input = await request.validate(service.schemaValidator)
 
-  // async uploadBuild({ response, request, response }: HttpContextContract) {}
+    const output = await service.execute(input)
 
-  // async buyGame({ response, request, response }: HttpContextContract) {}
+    return response.ok({ data: output, errors: [] })
+  }
+
+  public async addGameTouUser({ response, request, auth }: HttpContextContract) {
+    const service = new GameAddToUserService()
+
+    const input = await request.validate(service.schemaValidator)
+
+    const output = await service.execute({ ...input, user: auth.user! })
+
+    return response.ok({ data: output, errors: [] })
+  }
 }

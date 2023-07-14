@@ -24,7 +24,7 @@ export default class ExceptionHandler extends HttpExceptionHandler {
   }
 
   public async handle(error: any, ctx: HttpContextContract) {
-    // console.log(error.code, error.message)
+    console.log(error.code, error.message)
 
     if (error.code && error.code in ErrorCodesHandler) {
       return ErrorCodesHandler[error.code](ctx, error)
