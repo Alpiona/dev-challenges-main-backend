@@ -36,6 +36,8 @@ export default class FilesController {
 
     if (['GAME_IMAGE', 'GAME_COVER_IMAGE'].includes(type)) {
       response.append('Content-type', 'image/jpeg')
+    } else {
+      response.append('Content-type', 'application/octet-stream')
     }
     return response.download(filePath)
   }

@@ -29,7 +29,6 @@ export default class GamesController {
     const service = new GameGetListService()
 
     const input = await request.validate(service.schemaValidator)
-    console.log(input)
 
     const output = await service.execute({ ...input, userId })
 

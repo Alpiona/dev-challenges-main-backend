@@ -23,47 +23,64 @@ test.group('Games - Get List (Success)', (group) => {
     const response = await client.get(route('GamesController.getList'))
 
     response.assertStatus(200)
-    response.assertBody({ data: games.map((game) => game.toJSON()), errors: [] })
-  })
-
-  test('should return games list filtered by free price', async ({ client, route }) => {
-    const response = await client.get(route('GamesController.getList'))
-
-    response.assertStatus(200)
     response.assertBody({
-      data: games.map((game) => game.toJSON()).filter((game) => game.price === 0),
+      data: games.map((game) => {
+        return { ...game.toJSON(), images: [], builds: [] }
+      }),
       errors: [],
     })
   })
-
   test('should return games list filtered by sale', async ({ client, route }) => {
-    const response = await client.get(route('GamesController.getList'))
+    await GameFactory.merge({ discount: 0.25 }).with('author').createMany(3)
+
+    const gamesOnSale = await Game.query()
+      .where('discount', '>', 0)
+      .orderBy('title')
+      .preload('author')
+      .preload('builds')
+      .preload('images')
+
+    const response = await client.get(route('GamesController.getList')).qs({ onSale: true })
+
+    gamesOnSale.sort((a, b) => a.title.localeCompare(b.title))
 
     response.assertStatus(200)
     response.assertBody({
-      data: games.map((game) => game.toJSON()).filter((game) => game.price !== 0),
+      data: gamesOnSale.map((game) => game.toJSON()),
       errors: [],
     })
-  }).skip()
+  })
 
   test('should return games list filtered by games bought', async ({ client, route }) => {
-    const user = await UserFactory.with('games', 3).create()
+    const user = await UserFactory.create()
+    await GameFactory.merge({ authorId: user.id }).createMany(5)
+    const userGames = await Game.query()
+      .join('game_user', 'games.id', 'game_user.game_id')
+      .where('game_user.user_id', user.id)
+      .preload('author')
 
-    await user.load('games')
-    user.games.sort((a, b) => a.title.localeCompare(b.title))
+    userGames.sort((a, b) => a.title.localeCompare(b.title))
 
-    const response = await client.get(route('GamesController.getList'))
+    const response = await client
+      .get(route('GamesController.getList'))
+      .qs({ hasBought: true })
+      .loginAs(user)
 
     response.assertStatus(200)
-    response.assertBody({ data: user.games.map((game) => game.toJSON()), errors: [] })
+    response.assertBody({ data: userGames.map((game) => game.toJSON()), errors: [] })
   })
 
   test('should return games list filtered by max price', async ({ client, route }) => {
-    const response = await client.get(route('GamesController.getList'))
+    const response = await client.get(route('GamesController.getList')).qs('maxPrice', 15)
 
     const gamesFiltered = games.filter((game) => game.price <= 15)
 
     response.assertStatus(200)
-    response.assertBody({ data: gamesFiltered.map((game) => game.toJSON()), errors: [] })
+    response.assertBody({
+      data: gamesFiltered.map((game) => {
+        return { ...game.toJSON(), images: [], builds: [] }
+      }),
+      errors: [],
+    })
   })
 })

@@ -79,6 +79,9 @@ export default class Game extends AppBaseModel {
   @column()
   public platformUrlPath: string
 
+  @column({ serialize: (value) => Number(value) })
+  public discount: number
+
   @column()
   public tagline: string | null
 

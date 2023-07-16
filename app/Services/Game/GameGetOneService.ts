@@ -42,8 +42,6 @@ export default class GameGetOneService implements BaseService<Input, Output> {
       },
     })
 
-    console.log(gameFormatted)
-
     return gameFormatted
   }
 

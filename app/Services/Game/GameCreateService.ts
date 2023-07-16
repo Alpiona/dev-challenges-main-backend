@@ -43,6 +43,7 @@ export default class GameCreateService implements BaseService<Input, Output> {
       tagline,
       platformUrlPath,
       coverImage,
+      discount: 0,
     })
 
     await this.syncBuilds(game.id, builds)

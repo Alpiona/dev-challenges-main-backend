@@ -108,7 +108,7 @@ test.group('Users - login (Failed) ', (group) => {
     const response = await client.post(route('UsersController.login')).json(requestBody)
 
     response.assertBodyContains({
-      errors: [{ message: "The 'email' is required" }],
+      errors: [{ message: 'Is necessary username or email' }],
     })
     response.assertStatus(422)
   })
@@ -119,7 +119,7 @@ test.group('Users - login (Failed) ', (group) => {
     const response = await client.post(route('UsersController.login')).json(requestBody)
 
     response.assertBodyContains({
-      errors: [{ message: "The 'email' is required" }],
+      errors: [{ message: 'Is necessary username or email' }],
     })
     response.assertStatus(422)
   })

@@ -14,7 +14,7 @@ export default class extends BaseSchema {
       table.string('cover_image', 50).notNullable()
       table.string('tagline', 40).nullable()
       table.decimal('price', 10, 2).notNullable()
-      table.decimal('discount', 10, 2).notNullable().defaultTo(0)
+      table.decimal('discount', 10, 2).notNullable()
       table.integer('status').notNullable()
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
