@@ -5,10 +5,12 @@ export default class extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.uuid('game_id').references('games.id').primary().notNullable()
-      table.uuid('user_id').references('users.id').primary().notNullable()
+      table.uuid('game_id').references('games.id').notNullable()
+      table.uuid('user_id').references('users.id').notNullable()
 
       table.timestamp('created_at', { useTz: true })
+
+      table.unique(['game_id', 'user_id'])
 
       table.index('game_id')
       table.index('user_id')
